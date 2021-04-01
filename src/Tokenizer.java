@@ -8,27 +8,25 @@ public class Tokenizer {
 
     public static ArrayList<String> tokenize(String s) {
         ArrayList<String> tokens = new ArrayList<>();
-        String token = "";
+        StringBuilder token = new StringBuilder();
         TokenStatus status = TokenStatus.START;
-        char ch;
         String explicitTokens = "([)]' ";
-        for (int i = 0; i < s.length(); i++) {
-            ch = s.charAt(i);
+        for (char ch : s.toCharArray()) {
             if (status == TokenStatus.START) {
                 if (explicitTokens.contains(ch + "")) {
                     tokens.add(ch + "");
                 } else {
-                    token += ch;
+                    token.append(ch);
                     status = TokenStatus.WORD;
                 }
             } else { // TokenStatus.WORD
                 if (explicitTokens.contains(ch + "")) {
-                    tokens.add(token);
+                    tokens.add(token.toString());
                     tokens.add(ch + "");
-                    token = "";
+                    token = new StringBuilder();
                     status = TokenStatus.START;
                 } else {
-                    token += ch;
+                    token.append(ch);
                 }
             }
         }
