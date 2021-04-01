@@ -45,12 +45,9 @@ public class Tokenizer {
         // tokenize("(*(* 1.2e-2 10) 10)").forEach(System.out::println);
         // tokenize("(cons 12'(2 3))").forEach(System.out::println);
         // tokenize("(equal? 1'abc)").forEach(System.out::println);
-        // tokenize("(define d^2 (+ (square (- x2 x1)) (square (- y2 y1))
-        // ))").forEach(System.out::println);
+        // tokenize("(define d^2 (+ (square (- x2 x1)) (square (- y2 y1)) ))").forEach(System.out::println);
         // tokenize("(define 12a (+ 12 a_b)").forEach(System.out::println);
-        // tokenize("(define larger? (lambda (a b) (if (> a b) #t
-        // #f)))").forEach(System.out::println);
-        // tokenize("(cond [(< _t 12) 'morning] [(< _t 18) 'afternoon] [else
-        // 'evening])").forEach(System.out::println);
+        // tokenize("(define larger? (lambda (a b) (if (> a b) #t #f)))").forEach(System.out::println);
+        // tokenize("(cond [(< _t 12) 'morning] [(< _t 18) 'afternoon] [else 'evening])").forEach(System.out::println);
     }
 }
