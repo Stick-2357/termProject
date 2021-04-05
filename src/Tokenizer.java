@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 
 public class Tokenizer {
@@ -31,11 +29,12 @@ public class Tokenizer {
                 }
             }
         }
+        if (!token.toString().equals("")) tokens.add(token.toString());
         return tokens;
     }
 
     public static void main(String[] args) {
-        // tokenize("(+ 1 2)").forEach(System.out::println);
+        tokenize("(+ 1 2)").forEach(System.out::println);
         // tokenize("[=(+ 1 2) 3]").forEach(System.out::println);
         // tokenize("(+ 2 3 1.5)").forEach(System.out::println);
         // tokenize("(<= 1 2)").forEach(System.out::println);
