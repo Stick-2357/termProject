@@ -29,18 +29,55 @@ public class SimpleParser {
 	static boolean isOperands(ArrayList<String> tokens, int start, int end) {
 		// add your code
 		boolean check = false;
+		String explicitTokens = "*+ ";
 		for(int i = start; i <= end; i++)
 		{
-			if(!tokens.get(i).equals(" "))
+			// if(!explicitTokens.contains(tokens.get(i)))
+			if(tokens.get(i).equals("("))
 			{
-				check = isExpr(tokens, i, end);
+				check = isExpr(tokens, i, combineList(tokens).indexOf(")", i));
+			}
+			else
+			{
+				if(!explicitTokens.contains(tokens.get(i)))
+				{
+					check = isId(tokens, i, combineList(tokens).indexOf(")", i));
+				}
 			}
 		}
 		return check;
 	}
 
+	static String combineList(ArrayList<String> tokens)
+	{
+		String result = "";
+		for(int i = 0; i <= tokens.size()-1; i++)
+		{
+			result = result + tokens.get(i);
+		}
+		return result;
+	}
+
+	static String combineList(ArrayList<String> tokens, int start, int end)
+	{
+		String result = "";
+		for(int i = start; i <= end; i++)
+		{
+			result = result + tokens.get(i);
+		}
+		return result;
+	}
+
 	static boolean isId(ArrayList<String> tokens, int start, int end) {
 		// add your code
+		// if(!tokens.get(start).equals(")"))
+		// {
+		// 	return isInteger(tokens, start, end);
+		// }
+		// return true;
+		// if(start == end)
+		// 	return isInteger(tokens, start, end);
+		// return true;
 		return isInteger(tokens, start, end);
 	}
 	
