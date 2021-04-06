@@ -1,3 +1,5 @@
+package src;
+
 import java.util.*;
 /*
 A Grammar for scheme application with integers and arithmetic operators +, *
@@ -9,6 +11,8 @@ A Grammar for scheme application with integers and arithmetic operators +, *
  */
 
 public class SimpleParser {
+    static List<String> validOperators = Arrays.asList("+", "*", "/", "define");
+
     static boolean isS(String expression) {
         // return true if s is a valid expression. expression could be nested
         ArrayList<String> tokens = Tokenizer.tokenize(expression);
@@ -19,29 +23,32 @@ public class SimpleParser {
 
     static boolean isExpr(ArrayList<String> tokens, int start, int end) {
         if (start > end) return false;
-//        System.out.println(combineList(tokens, start, end));
         if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
-            return (tokens.get(start + 1).equals("+") || tokens.get(start + 1).equals("*")) && isOperands(tokens, start + 2, end - 1);
+            return isOperator(tokens, start + 1, start + 1) && isOperands(tokens, start + 2, end - 1);
         }
         return isId(tokens, start, end);
+    }
+
+    static boolean isOperator(ArrayList<String> tokens, int start, int end) {
+        return (validOperators.contains(combineList(tokens, start, end)));
     }
 
     static boolean isOperands(ArrayList<String> tokens, int start, int end) {
         // add your code
         boolean check = false;
-		String explicitTokens = "*+ ";
+        String explicitTokens = "*+ ";
         for (int i = start; i <= end; i++) {
             // if(!explicitTokens.contains(tokens.get(i)))
             if (tokens.get(i).equals("(")) {
                 check = isExpr(tokens, i, combineList(tokens).indexOf(")", i));
-				i = combineList(tokens).indexOf(")", i);
-				if(!check)
-					break;
+                i = combineList(tokens).indexOf(")", i);
+                if (!check)
+                    break;
             } else {
                 if (!explicitTokens.contains(tokens.get(i))) {
                     check = isId(tokens, i, combineList(tokens).indexOf(")", i));
-					if(!check && !tokens.get(i).equals(" "))
-						break;
+                    if (!check && !tokens.get(i).equals(" "))
+                        break;
                 }
             }
         }
@@ -50,10 +57,10 @@ public class SimpleParser {
 
     static boolean isId(ArrayList<String> tokens, int start, int end) {
         // add your code
-		if(tokens.get(start).equals(")") && start == end && combineList(tokens).indexOf("(", 1) > 0){
-			return true;
-		}
-		return isInteger(tokens, start, end);
+        if (tokens.get(start).equals(")") && start == end && combineList(tokens).indexOf("(", 1) > 0) {
+            return true;
+        }
+        return isInteger(tokens, start, end);
     }
 
     static boolean isInteger(ArrayList<String> tokens, int start, int end) {
@@ -79,25 +86,9 @@ public class SimpleParser {
         return result.toString();
     }
 
-    static Integer[] getIndexesOf(String expr, char ch) {
-        ArrayList<Integer> list = new ArrayList<>();
-        int index = expr.indexOf(ch);
-        while (index >= 0) {
-            list.add(index);
-            index = expr.indexOf(ch, index + 1);
-        }
-        return list.toArray(new Integer[0]);
-    }
-
-    static boolean isInnermostExpr(String expr) {
-        int start = expr.indexOf('(');
-        int nextOpenIndex = expr.substring(start).indexOf('(');
-        int nextCloseIndex = expr.substring(start).indexOf(')');
-        return nextOpenIndex > nextCloseIndex;
-    }
-
     public static void main(String[] args) {
         System.out.println("True for these");
+        System.out.println(isS("(/ 2 4)"));
         System.out.println(isS("234"));
         System.out.println(isS("(+ 20)"));
         System.out.println(isS("(+ 1 234)"));
@@ -106,9 +97,9 @@ public class SimpleParser {
         System.out.println(isS("(* (+ 1 2) (+ 1 3) (* 2 3))"));
 
         System.out.println("False for these");
-		System.out.println(isS("(* 2")); // Missing a closing parenthesis
+        System.out.println(isS("(* 2")); // Missing a closing parenthesis
         System.out.println(isS("(* 2))")); // Extra closing parenthesis
-		System.out.println(isS("(+ 2 (3 4))"));
-		System.out.println(isS("(* (+ 1 2) (1 + 3) (* 2 3))"));
+        System.out.println(isS("(+ 2 (3 4))"));
+        System.out.println(isS("(* (+ 1 2) (1 + 3) (* 2 3))"));
     }
 }
