@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 /*
 A Grammar for scheme application with integers and arithmetic operators +, *
@@ -31,14 +29,19 @@ public class SimpleParser {
     static boolean isOperands(ArrayList<String> tokens, int start, int end) {
         // add your code
         boolean check = false;
-        String explicitTokens = "*+ ";
+		String explicitTokens = "*+ ";
         for (int i = start; i <= end; i++) {
             // if(!explicitTokens.contains(tokens.get(i)))
             if (tokens.get(i).equals("(")) {
                 check = isExpr(tokens, i, combineList(tokens).indexOf(")", i));
+				i = combineList(tokens).indexOf(")", i);
+				if(!check)
+					break;
             } else {
                 if (!explicitTokens.contains(tokens.get(i))) {
                     check = isId(tokens, i, combineList(tokens).indexOf(")", i));
+					if(!check && !tokens.get(i).equals(" "))
+						break;
                 }
             }
         }
@@ -47,7 +50,10 @@ public class SimpleParser {
 
     static boolean isId(ArrayList<String> tokens, int start, int end) {
         // add your code
-        return isInteger(tokens, start, end);
+		if(tokens.get(start).equals(")") && start == end && combineList(tokens).indexOf("(", 1) > 0){
+			return true;
+		}
+		return isInteger(tokens, start, end);
     }
 
     static boolean isInteger(ArrayList<String> tokens, int start, int end) {
