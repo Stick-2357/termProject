@@ -11,7 +11,8 @@ A Grammar for scheme application with integers and arithmetic operators +, *
  */
 
 public class SimpleParser {
-    static List<String> validOperators = Arrays.asList("+", "*", "/", "define");
+    static List<String> validOperators = Arrays.asList("+", "*", "-", "/", "abs", "sqrt", "=", "<", ">",
+            "<=", ">=", "eqv?", "equal?", "and", "or", "not", "number?", "integer?", "pair?", "symbol?", "boolean?", "string?");
 
     static boolean isS(String expression) {
         // return true if s is a valid expression. expression could be nested
@@ -88,7 +89,6 @@ public class SimpleParser {
 
     public static void main(String[] args) {
         System.out.println("True for these");
-        System.out.println(isS("(/ 2 4)"));
         System.out.println(isS("234"));
         System.out.println(isS("(+ 20)"));
         System.out.println(isS("(+ 1 234)"));
