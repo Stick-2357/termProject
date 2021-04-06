@@ -1,3 +1,4 @@
+package src;
 import java.util.*;
 /*
 A Grammar for scheme application with integers and arithmetic operators +, *
@@ -59,7 +60,7 @@ public class SimpleParser {
         if (tokens.get(start).equals(")") && start == end && combineList(tokens).indexOf("(", 1) > 0) {
             return true;
         }
-        return isInteger(tokens, start, end);
+        return isInteger(tokens, start, end) || isFloat(tokens, start, end);
     }
 
     static boolean isInteger(ArrayList<String> tokens, int start, int end) {
@@ -98,6 +99,7 @@ public class SimpleParser {
     public static void main(String[] args) {
         System.out.println("True for these");
         System.out.println(isS("234"));
+        System.out.println(isS("2.34"));
         System.out.println(isS("(+ 20)"));
         System.out.println(isS("(+ 1 234)"));
         System.out.println(isS("(+ 2 10 200)"));
