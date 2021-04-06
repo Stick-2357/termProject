@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 /*
 A Grammar for scheme application with integers and arithmetic operators +, *
@@ -68,6 +66,16 @@ public class SimpleParser {
         // add your code
         try {
             Integer.parseInt(tokens.get(start));
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+	static boolean isFloat(ArrayList<String> tokens, int start, int end) {
+        // add your code
+        try {
+            Double.parseDouble(tokens.get(start));
             return true;
         } catch (NumberFormatException e) {
             return false;
