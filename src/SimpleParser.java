@@ -16,7 +16,7 @@ public class SimpleParser {
     static boolean isS(String expression) {
         // return true if s is a valid expression. expression could be nested
         ArrayList<String> tokens = Tokenizer.tokenize(expression);
-        tokens.forEach(System.out::print);
+        tokens.forEach(t -> System.out.print(t + " "));
         System.out.println();
         return isExpr(tokens, 0, tokens.size() - 1);
     }
