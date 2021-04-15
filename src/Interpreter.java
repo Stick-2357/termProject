@@ -14,7 +14,7 @@ A Grammar for scheme application with integers and arithmetic operators +, *
 public class Interpreter {
     static boolean debug = false;
     static Scanner scan;
-    static HashMap<String, Integer> variables = new HashMap<String, Integer>();
+    static HashMap<String, Integer> variables = new HashMap<>();
 
     static boolean interpret(String s) {
         // <S> -> <expr> | <define>
@@ -39,7 +39,7 @@ public class Interpreter {
 
     static Integer evalExpr(ArrayList<String> tokens, int start, int end) {
         // add your code
-        return 0;
+        return null;
     }
 
     static ArrayList<Integer> getOperands(ArrayList<String> tokens, int start, int end) {
@@ -49,12 +49,12 @@ public class Interpreter {
 
     static Integer evalId(ArrayList<String> tokens, int start, int end) {
         // add your code
-        return 0;
+        return null;
     }
 
     static Integer evalInteger(ArrayList<String> tokens, int start, int end) {
         // add your code
-        return 0;
+        return null;
     }
 
     static Integer evalVar(ArrayList<String> tokens, int start, int end) {
@@ -71,24 +71,22 @@ public class Interpreter {
     }
 
     static boolean isIdentifier(String s) {
-        // add your code
-        return false;
+        return variables.containsKey(s);
     }
 
     public static void main(String[] args) {
-        System.out.println("Andy Petite Chez Scheme 0.9. Nothing much supported.");
+        System.out.println("Eli and Alex Chez Scheme 0.9. Nothing much supported.");
         scan = new Scanner(System.in);
-        String userInput;
         while (true) {
             System.out.print("> ");
-            userInput = scan.nextLine().trim();
+            String userInput = scan.nextLine().trim();
             if (userInput.equals(""))
                 continue;
             else if (userInput.equals("(quit)"))
                 break;
             else if (userInput.equals("(local)"))
                 System.out.println(variables);
-            else if (interpret(userInput) == false)
+            else if (!interpret(userInput))
                 System.out.println("Syntax Error !!");
         }
         scan.close();

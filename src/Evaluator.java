@@ -8,13 +8,9 @@ import java.util.*;
  */
 public class Evaluator {
 
-    //	static final boolean debug = true;
-    static final boolean debug = false;
-
     static Integer evalS(String expression) {
         // return true if s is a valid expression. expression could be nested
         ArrayList<String> tokens = Tokenizer.tokenize(expression);
-        if (debug) tokens.forEach(System.out::println);
         return evalExpr(tokens, 0, tokens.size() - 1);
     }
 
@@ -39,8 +35,6 @@ public class Evaluator {
 
     static ArrayList<Integer> getOperands(List<String> tokens, int start, int end) {
         //<operands> -> <expr> <operands> | <id>
-
-        // add your code
         ArrayList<Integer> operands = new ArrayList<>();
         for (int i = start; i <= end; i++) {
             String token = tokens.get(i);
@@ -70,7 +64,7 @@ public class Evaluator {
     // helper functions
     public static int sum(List<Integer> list) {
         int sum = 0;
-        for (int i: list) {
+        for (int i : list) {
             sum += i;
         }
         return sum;
@@ -78,7 +72,7 @@ public class Evaluator {
 
     public static int mult(List<Integer> list) {
         int total = 1;
-        for (int i: list) {
+        for (int i : list) {
             total *= i;
         }
         return total;
