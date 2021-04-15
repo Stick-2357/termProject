@@ -20,7 +20,7 @@ public class SimpleParser {
         return isExpr(tokens, 0, tokens.size() - 1);
     }
 
-    static boolean isExpr(ArrayList<String> tokens, int start, int end) {
+    static boolean isExpr(List<String> tokens, int start, int end) {
         if (start > end) return false;
         if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
             return isOperator(tokens, start + 1, start + 1) && isOperands(tokens, start + 2, end - 1);
@@ -28,11 +28,11 @@ public class SimpleParser {
         return isId(tokens, start, end);
     }
 
-    static boolean isOperator(ArrayList<String> tokens, int start, int end) {
+    static boolean isOperator(List<String> tokens, int start, int end) {
         return (validOperators.contains(combineList(tokens, start, end)));
     }
 
-    static boolean isOperands(ArrayList<String> tokens, int start, int end) {
+    static boolean isOperands(List<String> tokens, int start, int end) {
         // add your code
         boolean check = false;
         String explicitTokens = "*+ ";
@@ -54,7 +54,7 @@ public class SimpleParser {
         return check;
     }
 
-    static boolean isId(ArrayList<String> tokens, int start, int end) {
+    static boolean isId(List<String> tokens, int start, int end) {
         // add your code
         if (tokens.get(start).equals(")") && start == end && combineList(tokens).indexOf("(", 1) > 0) {
             return true;
@@ -62,7 +62,7 @@ public class SimpleParser {
         return isInteger(tokens, start, end) || isFloat(tokens, start, end);
     }
 
-    static boolean isInteger(ArrayList<String> tokens, int start, int end) {
+    static boolean isInteger(List<String> tokens, int start, int end) {
         // add your code
         try {
             Integer.parseInt(tokens.get(start));
@@ -72,7 +72,7 @@ public class SimpleParser {
         }
     }
 
-	static boolean isFloat(ArrayList<String> tokens, int start, int end) {
+	static boolean isFloat(List<String> tokens, int start, int end) {
         // add your code
         try {
             Double.parseDouble(tokens.get(start));
@@ -83,11 +83,11 @@ public class SimpleParser {
     }
 
     // helper methods
-    static String combineList(ArrayList<String> tokens) {
+    static String combineList(List<String> tokens) {
         return combineList(tokens, 0, tokens.size() - 1);
     }
 
-    static String combineList(ArrayList<String> tokens, int start, int end) {
+    static String combineList(List<String> tokens, int start, int end) {
         StringBuilder result = new StringBuilder();
         for (int i = start; i <= end; i++) {
             result.append(tokens.get(i));
