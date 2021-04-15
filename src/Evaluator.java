@@ -31,6 +31,8 @@ public class Evaluator {
                 default:
                     return null;
             }
+        } else if (start == end) {
+            return Integer.parseInt(tokens.get(start));
         }
         return 0;
     }
@@ -68,8 +70,7 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-//        System.out.println(getOperands(Tokenizer.tokenize("")))
-//        System.out.println(evalS("234")); // 234
+        System.out.println(evalS("234")); // 234
         System.out.println(evalS("(+ 20)")); // 20
         System.out.println(evalS("(+ 1 234)")); // 235
         System.out.println(evalS("(+ 2 10 200)")); // 212
