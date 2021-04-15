@@ -39,7 +39,7 @@ public class Interpreter {
 
     static Integer evalExpr(ArrayList<String> tokens, int start, int end) {
         // add your code
-        return null;
+        return Evaluator.evalExpr(tokens, start, end);
     }
 
     static ArrayList<Integer> getOperands(ArrayList<String> tokens, int start, int end) {
