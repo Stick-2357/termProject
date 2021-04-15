@@ -10,8 +10,7 @@ A Grammar for scheme application with integers and arithmetic operators +, *
  */
 
 public class SimpleParser {
-    static List<String> validOperators = Arrays.asList("+", "*", "-", "/", "abs", "sqrt", "=", "<", ">",
-            "<=", ">=", "eqv?", "equal?", "and", "or", "not", "number?", "integer?", "pair?", "symbol?", "boolean?", "string?");
+    static List<String> validOperators = Arrays.asList("+", "*");
 
     static boolean isS(String expression) {
         // return true if s is a valid expression. expression could be nested
