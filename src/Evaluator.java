@@ -19,13 +19,33 @@ public class Evaluator {
     }
 
     static Integer evalExpr(ArrayList<String> tokens, int start, int end) {
-        // add your code
+        // <expr> -> ( + <operands> ) | ( * <operands> ) | <id>
+        if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
+            String operator = tokens.get(start + 1);
+            ArrayList<Integer> operands = getOperands(tokens, start + 2, end - 1);
+            switch (operator) {
+                case "+":
+                    return sum(operands);
+                case "*":
+
+                default:
+                    return null;
+            }
+        }
         return 0;
     }
 
     static ArrayList<Integer> getOperands(ArrayList<String> tokens, int start, int end) {
+        //<operands> -> <expr> <operands> | <id>
+
         // add your code
-        return new ArrayList<>(List.of(0));
+        ArrayList<Integer> operands = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            String token = tokens.get(i);
+            operands.add(Integer.parseInt(token));
+        }
+
+        return operands;
     }
 
     static Integer evalId(ArrayList<String> tokens, int start, int end) {
@@ -38,14 +58,24 @@ public class Evaluator {
         return 0;
     }
 
+    // helper functions
+    public static int sum(List<Integer> list) {
+        int sum = 0;
+        for (int i: list) {
+            sum += i;
+        }
+        return sum;
+    }
+
     public static void main(String[] args) {
-        System.out.println(evalS("234")); // 234
+//        System.out.println(getOperands(Tokenizer.tokenize("")))
+//        System.out.println(evalS("234")); // 234
         System.out.println(evalS("(+ 20)")); // 20
         System.out.println(evalS("(+ 1 234)")); // 235
         System.out.println(evalS("(+ 2 10 200)")); // 212
-        System.out.println(evalS("(* (+ 1 2) (+ 1 3))")); // 12
-        System.out.println(evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
-
-        System.out.println(evalS("(+ 20")); // null
+//        System.out.println(evalS("(* (+ 1 2) (+ 1 3))")); // 12
+//        System.out.println(evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
+//
+//        System.out.println(evalS("(+ 20")); // null
     }
 }
