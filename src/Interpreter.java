@@ -26,11 +26,28 @@ public class Interpreter {
     }
 
     static boolean define(ArrayList<String> tokens, int start, int end) {
-        // add your code
+        // "(", "define", "key", "value", ")"
+        if (tokens.get(start).equals("(")
+                && tokens.get(start + 1).equals("define")
+                && isValidKey(tokens.get(start + 2))
+                && isId(tokens.get(start + 3))
+                && tokens.get(start + 4).equals(")")
+                && end - start == 4) {
+            variables.put(tokens.get(start + 2), Integer.parseInt(tokens.get(start + 3)));
+            return true;
+        }
         return false;
     }
 
+    static boolean isValidKey(String s) {
+        return !(s.equals("(") || s.equals(")") || isId(s));
+    }
+
     static boolean evaluate(ArrayList<String> tokens, int start, int end) {
+        if (isIdentifier(tokens.get(start))) {
+            System.out.println(evalVar(tokens, start, end));
+            return true;
+        }
         Integer r = evalExpr(tokens, 0, tokens.size() - 1);
         if (r == null) return false;
         System.out.println(r);
@@ -38,23 +55,61 @@ public class Interpreter {
     }
 
     static Integer evalExpr(ArrayList<String> tokens, int start, int end) {
-        // add your code
-        return Evaluator.evalExpr(tokens, start, end);
+        if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
+            String operator = tokens.get(start + 1);
+            ArrayList<Integer> operands = getOperands(tokens, start + 2, end - 1);
+            switch (operator) {
+                case "+":
+                    return Evaluator.sum(operands);
+                case "*":
+                    return Evaluator.mult(operands);
+                default:
+                    return null;
+            }
+        } else if (start == end) {
+            return Integer.parseInt(tokens.get(start));
+        }
+        return null;
     }
 
     static ArrayList<Integer> getOperands(ArrayList<String> tokens, int start, int end) {
-        // add your code
-        return new ArrayList<>(List.of(0));
+        ArrayList<Integer> operands = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            String token = tokens.get(i);
+            if (token.equals("(")) {
+                List<String> subList = tokens.subList(i, tokens.size() - 1);
+                int iOfEnding = subList.indexOf(")") + i;
+                operands.add(evalExpr(tokens, i, iOfEnding));
+                i = iOfEnding;
+            } else if (isIdentifier(token)) {
+                operands.add(evalVar(tokens, i, i));
+            } else if (SimpleParser.isInteger(tokens, i, i)) {
+                operands.add(Integer.parseInt(token));
+            }
+        }
+
+        return operands;
+    }
+
+    static boolean isId(String s) {
+
+        return isInteger(s);
     }
 
     static Integer evalId(ArrayList<String> tokens, int start, int end) {
-        // add your code
         return null;
     }
 
-    static Integer evalInteger(ArrayList<String> tokens, int start, int end) {
-        // add your code
-        return null;
+    static boolean isInteger(String s) {
+        return evalInteger(s) != null;
+    }
+
+    static Integer evalInteger(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     static Integer evalVar(ArrayList<String> tokens, int start, int end) {
