@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 
 /*
@@ -48,15 +46,15 @@ public class Interpreter extends Evaluator {
             System.out.println(evalVar(tokens, start, end));
             return true;
         }
-        Integer r = evalExpr(tokens, 0, tokens.size() - 1);
+        Number r = evalExpr(tokens, 0, tokens.size() - 1);
         if (r == null) return false;
         System.out.println(r);
         return true;
     }
 
     @Override
-    List<Integer> getOperands(List<String> tokens, int start, int end) {
-        List<Integer> operands = new ArrayList<>();
+    List<Number> getOperands(List<String> tokens, int start, int end) {
+        List<Number> operands = new ArrayList<>();
         for (int i = start; i <= end; i++) {
             String token = tokens.get(i);
             if (token.equals("(")) {
@@ -68,6 +66,8 @@ public class Interpreter extends Evaluator {
                 operands.add(evalVar(tokens, i, i));
             } else if (SimpleParser.isInteger(tokens, i, i)) {
                 operands.add(Integer.parseInt(token));
+            } else if (SimpleParser.isFloat(tokens, i, i)) {
+                operands.add(Float.parseFloat(token));
             }
         }
 
