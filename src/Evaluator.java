@@ -8,17 +8,17 @@ import java.util.*;
  */
 public class Evaluator {
 
-    Integer evalS(String expression) {
+    Number evalS(String expression) {
         // return true if s is a valid expression. expression could be nested
         List<String> tokens = Tokenizer.tokenize(expression);
         return evalExpr(tokens, 0, tokens.size() - 1);
     }
 
-    Integer evalExpr(List<String> tokens, int start, int end) {
+    Number evalExpr(List<String> tokens, int start, int end) {
         // <expr> -> ( + <operands> ) | ( * <operands> ) | <id>
         if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
             String operator = tokens.get(start + 1);
-            List<Integer> operands = getOperands(tokens, start + 2, end - 1);
+            List<Number> operands = getOperands(tokens, start + 2, end - 1);
             switch (operator) {
                 case "+":
                     return sum(operands);
@@ -27,24 +27,28 @@ public class Evaluator {
                 default:
                     return null;
             }
-        } else if (start == end) {
+        } else if (start == end && SimpleParser.isInteger(tokens, start, end)) {
             return Integer.parseInt(tokens.get(start));
+        } else if (start == end && SimpleParser.isFloat(tokens, start, end)) {
+            return Float.parseFloat(tokens.get(start));
         }
         return null;
     }
 
-    List<Integer> getOperands(List<String> tokens, int start, int end) {
+    List<Number> getOperands(List<String> tokens, int start, int end) {
         //<operands> -> <expr> <operands> | <id>
-        List<Integer> operands = new ArrayList<>();
+        List<Number> operands = new ArrayList<>();
         for (int i = start; i <= end; i++) {
             String token = tokens.get(i);
             if (token.equals("(")) {
                 List<String> subList = tokens.subList(i, tokens.size() - 1);
                 int iOfEnding = subList.indexOf(")") + i;
-                operands.add(evalExpr(tokens, i, iOfEnding));
+                operands.add((float)evalExpr(tokens, i, iOfEnding));
                 i = iOfEnding;
             } else if (SimpleParser.isInteger(tokens, i, i)) {
                 operands.add(Integer.parseInt(token));
+            } else if (SimpleParser.isFloat(tokens, i, i)) {
+                operands.add(Float.parseFloat(token));
             }
         }
 
@@ -55,45 +59,60 @@ public class Evaluator {
         return evalId(s) != null;
     }
 
-    Integer evalId(String token) {
-        Integer integer = evalInteger(token);
-        return integer;
+    Float evalId(String token) {
+        Float Float = evalInteger(token);
+        return Float;
     }
 
-    Integer evalInteger(String s) {
+    Float evalInteger(String s) {
         try {
-            return Integer.parseInt(s);
+            return Float.parseFloat(s);
         } catch (NumberFormatException e) {
             return null;
         }
     }
 
     // helper functions
-    public int sum(List<Integer> list) {
-        int sum = 0;
-        for (int i : list) {
-            sum += i;
+    public Number sum(List<Number> list) {
+        float sum = 0;
+        boolean floatCheck = false;
+        for (Number i : list) {
+            if(i instanceof Integer)
+                sum += i.intValue();
+            else if(i instanceof Float) {
+                sum += i.floatValue();
+                floatCheck = true;
+            }
         }
-        return sum;
+        if(floatCheck) return sum;
+        else return (int)sum;
     }
 
-    public int mult(List<Integer> list) {
-        int total = 1;
-        for (int i : list) {
-            total *= i;
+    public Number mult(List<Number> list) {
+        float total = 1;
+        boolean floatCheck = false;
+        for (Number i : list) {
+            if(i instanceof Integer)
+                total *= i.intValue();
+            else if(i instanceof Float) {
+                total *= i.floatValue();
+                floatCheck = true;
+            }
         }
-        return total;
+        if(floatCheck) return total;
+        else return (int)total;
     }
 
     public static void main(String[] args) {
         Evaluator evaluator = new Evaluator();
-        System.out.println(evaluator.evalS("234")); // 234
-        System.out.println(evaluator.evalS("(+ 20)")); // 20
-        System.out.println(evaluator.evalS("(+ 1 234)")); // 235
-        System.out.println(evaluator.evalS("(+ 2 10 200)")); // 212
-        System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3))")); // 12
-        System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
+        // System.out.println(evaluator.evalS("234")); // 234
+        System.out.println(evaluator.evalS("(+ 2 3)")); // 234
+        // System.out.println(evaluator.evalS("(+ 20)")); // 20
+        // System.out.println(evaluator.evalS("(+ 1 234)")); // 235
+        // System.out.println(evaluator.evalS("(+ 2 10 200)")); // 212
+        // System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3))")); // 12
+        // System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
 
-        System.out.println(evaluator.evalS("(+ 20")); // null
+        // System.out.println(evaluator.evalS("(+ 20")); // null
     }
 }
