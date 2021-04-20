@@ -27,10 +27,8 @@ public class Evaluator {
                 default:
                     return null;
             }
-        } else if (start == end && SimpleParser.isInteger(tokens, start, end)) {
-            return Integer.parseInt(tokens.get(start));
-        } else if (start == end && SimpleParser.isFloat(tokens, start, end)) {
-            return Float.parseFloat(tokens.get(start));
+        } else if (start == end) {
+            return evalId(tokens.get(start));
         }
         return null;
     }
@@ -43,30 +41,43 @@ public class Evaluator {
             if (token.equals("(")) {
                 List<String> subList = tokens.subList(i, tokens.size() - 1);
                 int iOfEnding = subList.indexOf(")") + i;
-                operands.add((float)evalExpr(tokens, i, iOfEnding));
+                operands.add(evalExpr(tokens, i, iOfEnding));
                 i = iOfEnding;
-            } else if (SimpleParser.isInteger(tokens, i, i)) {
-                operands.add(Integer.parseInt(token));
-            } else if (SimpleParser.isFloat(tokens, i, i)) {
-                operands.add(Float.parseFloat(token));
+            } else if (isId(token)) {
+                operands.add(evalId(token));
             }
         }
 
         return operands;
     }
 
-    boolean isId(String s) {
+    protected boolean isId(String s) {
         return evalId(s) != null;
     }
 
-    Float evalId(String token) {
-        Float Float = evalInteger(token);
-        return Float;
+    Number evalId(String token) {
+        Integer i = evalInteger(token);
+        if (i != null) {
+            return i;
+        }
+        Float f = evalFloat(token);
+        if (f != null) {
+            return f;
+        }
+        return null;
     }
 
-    Float evalInteger(String s) {
+    Float evalFloat(String s) {
         try {
             return Float.parseFloat(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    Integer evalInteger(String s) {
+        try {
+            return Integer.parseInt(s);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -77,42 +88,46 @@ public class Evaluator {
         float sum = 0;
         boolean floatCheck = false;
         for (Number i : list) {
-            if(i instanceof Integer)
+            if (i instanceof Integer)
                 sum += i.intValue();
-            else if(i instanceof Float) {
+            else if (i instanceof Float) {
                 sum += i.floatValue();
                 floatCheck = true;
             }
         }
-        if(floatCheck) return sum;
-        else return (int)sum;
+        if (floatCheck) return sum;
+        else return (int) sum;
     }
 
     public Number mult(List<Number> list) {
         float total = 1;
         boolean floatCheck = false;
         for (Number i : list) {
-            if(i instanceof Integer)
+            if (i instanceof Integer)
                 total *= i.intValue();
-            else if(i instanceof Float) {
+            else if (i instanceof Float) {
                 total *= i.floatValue();
                 floatCheck = true;
             }
         }
-        if(floatCheck) return total;
-        else return (int)total;
+        if (floatCheck) return total;
+        else return (int) total;
     }
 
     public static void main(String[] args) {
         Evaluator evaluator = new Evaluator();
-        // System.out.println(evaluator.evalS("234")); // 234
-        System.out.println(evaluator.evalS("(+ 2 3)")); // 234
-        // System.out.println(evaluator.evalS("(+ 20)")); // 20
-        // System.out.println(evaluator.evalS("(+ 1 234)")); // 235
-        // System.out.println(evaluator.evalS("(+ 2 10 200)")); // 212
-        // System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3))")); // 12
-        // System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
 
-        // System.out.println(evaluator.evalS("(+ 20")); // null
+//        System.out.println(evaluator.evalS("234")); // 234
+        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
+        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
+        System.out.println(evaluator.evalS("(* 2 3)")); // 6
+        System.out.println(evaluator.evalS("(* 2.5 3)")); // 7.5
+//        System.out.println(evaluator.evalS("(+ 20)")); // 20
+//        System.out.println(evaluator.evalS("(+ 1 234)")); // 235
+//        System.out.println(evaluator.evalS("(+ 2 10 200)")); // 212
+//        System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3))")); // 12
+//        System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
+//
+//        System.out.println(evaluator.evalS("(+ 20")); // null
     }
 }
