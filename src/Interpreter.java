@@ -14,7 +14,7 @@ A Grammar for scheme application with integers and arithmetic operators +, *
 public class Interpreter extends Evaluator {
     boolean debug = false;
     static Scanner scan;
-    static HashMap<String, Integer> variables = new HashMap<>();
+    static HashMap<String, Number> variables = new HashMap<>();
 
     boolean interpret(String s) {
         // <S> -> <expr> | <define>
@@ -33,7 +33,7 @@ public class Interpreter extends Evaluator {
                 && isId(tokens.get(start + 3))
                 && tokens.get(start + 4).equals(")")
                 && end - start == 4) {
-            variables.put(tokens.get(start + 2), Integer.parseInt(tokens.get(start + 3)));
+            variables.put(tokens.get(start + 2), evalId(tokens.get(start + 3)));
             return true;
         }
         return false;
@@ -66,22 +66,20 @@ public class Interpreter extends Evaluator {
                 i = iOfEnding;
             } else if (isIdentifier(token)) {
                 operands.add(evalVar(tokens, i, i));
-            } else if (SimpleParser.isInteger(tokens, i, i)) {
-                operands.add(Integer.parseInt(token));
-            } else if (SimpleParser.isFloat(tokens, i, i)) {
-                operands.add(Float.parseFloat(token));
+            } else if (isId(token)) {
+                operands.add(evalId(token));
             }
         }
 
         return operands;
     }
 
-    Integer evalVar(List<String> tokens, int start, int end) {
+    Number evalVar(List<String> tokens, int start, int end) {
         if (debug) System.out.println("evalVar(" + start + "," + end + ")");
         if (start != end) return null;
         String s = tokens.get(start);
         if (isIdentifier(s)) {
-            Integer r = variables.get(s);
+            Number r = variables.get(s);
             if (r == null)
                 System.out.println("Unknown symbol: " + s);
             else return r;
