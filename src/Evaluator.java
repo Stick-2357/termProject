@@ -8,17 +8,17 @@ import java.util.*;
  */
 public class Evaluator {
 
-    static Integer evalS(String expression) {
+    Integer evalS(String expression) {
         // return true if s is a valid expression. expression could be nested
-        ArrayList<String> tokens = Tokenizer.tokenize(expression);
+        List<String> tokens = Tokenizer.tokenize(expression);
         return evalExpr(tokens, 0, tokens.size() - 1);
     }
 
-    static Integer evalExpr(List<String> tokens, int start, int end) {
+    Integer evalExpr(List<String> tokens, int start, int end) {
         // <expr> -> ( + <operands> ) | ( * <operands> ) | <id>
         if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
             String operator = tokens.get(start + 1);
-            ArrayList<Integer> operands = getOperands(tokens, start + 2, end - 1);
+            List<Integer> operands = getOperands(tokens, start + 2, end - 1);
             switch (operator) {
                 case "+":
                     return sum(operands);
@@ -33,9 +33,9 @@ public class Evaluator {
         return null;
     }
 
-    static ArrayList<Integer> getOperands(List<String> tokens, int start, int end) {
+    List<Integer> getOperands(List<String> tokens, int start, int end) {
         //<operands> -> <expr> <operands> | <id>
-        ArrayList<Integer> operands = new ArrayList<>();
+        List<Integer> operands = new ArrayList<>();
         for (int i = start; i <= end; i++) {
             String token = tokens.get(i);
             if (token.equals("(")) {
@@ -51,18 +51,21 @@ public class Evaluator {
         return operands;
     }
 
-    static Integer evalId(List<String> tokens, int start, int end) {
-        // add your code
-        return 0;
+    Integer evalId(String token) {
+        Integer integer = evalInteger(token);
+        return integer;
     }
 
-    static Integer evalInteger(List<String> tokens, int start, int end) {
-        // add your code
-        return 0;
+    Integer evalInteger(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     // helper functions
-    public static int sum(List<Integer> list) {
+    public int sum(List<Integer> list) {
         int sum = 0;
         for (int i : list) {
             sum += i;
@@ -70,7 +73,7 @@ public class Evaluator {
         return sum;
     }
 
-    public static int mult(List<Integer> list) {
+    public int mult(List<Integer> list) {
         int total = 1;
         for (int i : list) {
             total *= i;
@@ -79,13 +82,14 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-        System.out.println(evalS("234")); // 234
-        System.out.println(evalS("(+ 20)")); // 20
-        System.out.println(evalS("(+ 1 234)")); // 235
-        System.out.println(evalS("(+ 2 10 200)")); // 212
-        System.out.println(evalS("(* (+ 1 2) (+ 1 3))")); // 12
-        System.out.println(evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
+        Evaluator evaluator = new Evaluator();
+        System.out.println(evaluator.evalS("234")); // 234
+        System.out.println(evaluator.evalS("(+ 20)")); // 20
+        System.out.println(evaluator.evalS("(+ 1 234)")); // 235
+        System.out.println(evaluator.evalS("(+ 2 10 200)")); // 212
+        System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3))")); // 12
+        System.out.println(evaluator.evalS("(* (+ 1 2) (+ 1 3) (* 2 3))")); // 72
 
-        System.out.println(evalS("(+ 20")); // null
+        System.out.println(evaluator.evalS("(+ 20")); // null
     }
 }

@@ -11,21 +11,21 @@ A Grammar for scheme application with integers and arithmetic operators +, *
 <id> -> <integer>  | <var>
  */
 
-public class Interpreter {
-    static boolean debug = false;
+public class Interpreter extends Evaluator {
+    boolean debug = false;
     static Scanner scan;
     static HashMap<String, Integer> variables = new HashMap<>();
 
-    static boolean interpret(String s) {
+    boolean interpret(String s) {
         // <S> -> <expr> | <define>
-        ArrayList<String> tokens = Tokenizer.tokenize(s);
+        List<String> tokens = Tokenizer.tokenize(s);
         return (
                 define(tokens, 0, tokens.size() - 1) ||
                         evaluate(tokens, 0, tokens.size() - 1)
         );
     }
 
-    static boolean define(ArrayList<String> tokens, int start, int end) {
+    boolean define(List<String> tokens, int start, int end) {
         // "(", "define", "key", "value", ")"
         if (tokens.get(start).equals("(")
                 && tokens.get(start + 1).equals("define")
@@ -39,11 +39,11 @@ public class Interpreter {
         return false;
     }
 
-    static boolean isValidKey(String s) {
+    boolean isValidKey(String s) {
         return !(s.equals("(") || s.equals(")") || isId(s));
     }
 
-    static boolean evaluate(ArrayList<String> tokens, int start, int end) {
+    boolean evaluate(List<String> tokens, int start, int end) {
         if (isIdentifier(tokens.get(start))) {
             System.out.println(evalVar(tokens, start, end));
             return true;
@@ -54,26 +54,9 @@ public class Interpreter {
         return true;
     }
 
-    static Integer evalExpr(ArrayList<String> tokens, int start, int end) {
-        if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
-            String operator = tokens.get(start + 1);
-            ArrayList<Integer> operands = getOperands(tokens, start + 2, end - 1);
-            switch (operator) {
-                case "+":
-                    return Evaluator.sum(operands);
-                case "*":
-                    return Evaluator.mult(operands);
-                default:
-                    return null;
-            }
-        } else if (start == end) {
-            return Integer.parseInt(tokens.get(start));
-        }
-        return null;
-    }
-
-    static ArrayList<Integer> getOperands(ArrayList<String> tokens, int start, int end) {
-        ArrayList<Integer> operands = new ArrayList<>();
+    @Override
+    List<Integer> getOperands(List<String> tokens, int start, int end) {
+        List<Integer> operands = new ArrayList<>();
         for (int i = start; i <= end; i++) {
             String token = tokens.get(i);
             if (token.equals("(")) {
@@ -91,28 +74,11 @@ public class Interpreter {
         return operands;
     }
 
-    static boolean isId(String s) {
-
-        return isInteger(s);
+    boolean isId(String s) {
+        return evalId(s) != null;
     }
 
-    static Integer evalId(ArrayList<String> tokens, int start, int end) {
-        return null;
-    }
-
-    static boolean isInteger(String s) {
-        return evalInteger(s) != null;
-    }
-
-    static Integer evalInteger(String s) {
-        try {
-            return Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    static Integer evalVar(ArrayList<String> tokens, int start, int end) {
+    Integer evalVar(List<String> tokens, int start, int end) {
         if (debug) System.out.println("evalVar(" + start + "," + end + ")");
         if (start != end) return null;
         String s = tokens.get(start);
@@ -125,11 +91,12 @@ public class Interpreter {
         return null;
     }
 
-    static boolean isIdentifier(String s) {
+    boolean isIdentifier(String s) {
         return variables.containsKey(s);
     }
 
     public static void main(String[] args) {
+        Interpreter interpreter = new Interpreter();
         System.out.println("Eli and Alex Chez Scheme 0.9. Nothing much supported.");
         scan = new Scanner(System.in);
         while (true) {
@@ -141,7 +108,7 @@ public class Interpreter {
                 break;
             else if (userInput.equals("(local)"))
                 System.out.println(variables);
-            else if (!interpret(userInput))
+            else if (!interpreter.interpret(userInput))
                 System.out.println("Syntax Error !!");
         }
         scan.close();
