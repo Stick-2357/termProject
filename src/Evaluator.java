@@ -51,6 +51,10 @@ public class Evaluator {
         return operands;
     }
 
+    boolean isId(String s) {
+        return evalId(s) != null;
+    }
+
     Integer evalId(String token) {
         Integer integer = evalInteger(token);
         return integer;

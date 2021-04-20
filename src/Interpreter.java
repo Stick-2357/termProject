@@ -74,10 +74,6 @@ public class Interpreter extends Evaluator {
         return operands;
     }
 
-    boolean isId(String s) {
-        return evalId(s) != null;
-    }
-
     Integer evalVar(List<String> tokens, int start, int end) {
         if (debug) System.out.println("evalVar(" + start + "," + end + ")");
         if (start != end) return null;
