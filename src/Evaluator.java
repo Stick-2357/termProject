@@ -45,10 +45,8 @@ public class Evaluator {
                 int iOfEnding = subList.indexOf(")") + i;
                 operands.add(evalExpr(tokens, i, iOfEnding));
                 i = iOfEnding;
-            } else if (SimpleParser.isInteger(tokens, i, i)) {
-                operands.add(Integer.parseInt(token));
-            } else if (SimpleParser.isFloat(tokens, i, i)) {
-                operands.add(Float.parseFloat(token));
+            } else if (isId(token)) {
+                operands.add(evalId(token));
             }
         }
 
@@ -124,25 +122,21 @@ public class Evaluator {
         Number numerator = list.get(0);
         boolean floatCheck = false;
         for (int i = 1; i <= list.size() - 1; i++) {
-            if(list.get(i) instanceof Integer)
+            if (list.get(i) instanceof Integer)
                 denom *= list.get(i).intValue();
-            else if(list.get(i) instanceof Float) {
+            else if (list.get(i) instanceof Float) {
                 denom *= list.get(i).floatValue();
                 floatCheck = true;
             }
         }
-        if(numerator instanceof Integer) {
-            int num = numerator.intValue();
-            total = num / denom;
-            if(floatCheck) return total;
-            else return (int)total;
-        }
-        else if(numerator instanceof Float) {
-            float num = numerator.floatValue();
-            total = num / denom;
+        if (numerator instanceof Integer) {
+            total = numerator.intValue() / denom;
+            if (floatCheck) return total;
+            else return (int) total;
+        } else if (numerator instanceof Float) {
+            total = numerator.floatValue() / denom;
             return total;
-        }
-        else return null;
+        } else return null;
     }
 
     public static void main(String[] args) {
