@@ -154,29 +154,29 @@ public class Evaluator {
         Rational rationalTotal = new Rational(1, 1);
         boolean floatCheck = false;
         boolean rationalCheck = false;
-        for (Number i : list) {
+        for (Number n : list) {
             if (rationalCheck && !floatCheck) {
-                if (i instanceof Integer) {
-                    rationalTotal.times(new Rational(i.intValue(), 1));
-                } else if (i instanceof Float) {
+                if (n instanceof Integer) {
+                    rationalTotal = rationalTotal.times(new Rational(n.intValue(), 1));
+                } else if (n instanceof Float) {
                     total = rationalTotal.floatValue();
-                    total *= i.floatValue();
+                    total *= n.floatValue();
                     floatCheck = true;
-                } else if (i instanceof Rational) {
-                    rationalTotal.times((Rational) i);
+                } else if (n instanceof Rational) {
+                    rationalTotal = rationalTotal.times((Rational) n);
                 }
             } else {
-                if (i instanceof Integer)
-                    total *= i.intValue();
-                else if (i instanceof Float) {
-                    total *= i.floatValue();
+                if (n instanceof Integer)
+                    total *= n.intValue();
+                else if (n instanceof Float) {
+                    total *= n.floatValue();
                     floatCheck = true;
-                } else if (i instanceof Rational) {
+                } else if (n instanceof Rational) {
                     if (floatCheck) {
-                        total *= i.floatValue();
+                        total *= n.floatValue();
                     } else {
                         rationalTotal = new Rational((int) total, 1);
-                        rationalTotal.times((Rational) i);
+                        rationalTotal = rationalTotal.times((Rational) n);
                         rationalCheck = true;
                     }
                 }
@@ -188,26 +188,39 @@ public class Evaluator {
     }
 
     public Number div(List<Number> list) {
-        float denom = 1;
-        float total;
         Number numerator = list.get(0);
-        boolean floatCheck = false;
-        for (int i = 1; i <= list.size() - 1; i++) {
-            if (list.get(i) instanceof Integer)
-                denom *= list.get(i).intValue();
-            else if (list.get(i) instanceof Float) {
-                denom *= list.get(i).floatValue();
-                floatCheck = true;
+
+        List<Number> denominators = list.subList(1, list.size());
+        Number denom = mult(denominators);
+
+        if (numerator instanceof Integer) {
+            if (denom instanceof Integer) {
+                return numerator.intValue() / denom.intValue();
+            } else if (denom instanceof Float) {
+                return numerator.intValue() / denom.floatValue();
+            } else if (denom instanceof Rational) {
+                Rational numRational = new Rational((int) numerator, 1);
+                Rational reciprocal = ((Rational) denom).reciprocal();
+                return numRational.times(reciprocal);
+            }
+        } else if (numerator instanceof Float) {
+            if (denom instanceof Integer) {
+                return numerator.floatValue() / denom.intValue();
+            } else if (denom instanceof Float) {
+                return numerator.floatValue() / denom.floatValue();
+            } else if (denom instanceof Rational) {
+                return numerator.floatValue() / denom.floatValue();
+            }
+        } else if (numerator instanceof Rational) {
+            if (denom instanceof Integer) {
+                return ((Rational) numerator).times(new Rational(1, (int) denom)); // numerator * reciprocal of denominator
+            } else if (denom instanceof Float) {
+                return numerator.floatValue() / denom.floatValue(); // return as float
+            } else if (denom instanceof Rational) {
+                return ((Rational) numerator).times(((Rational) denom).reciprocal());
             }
         }
-        if (numerator instanceof Integer) {
-            total = numerator.intValue() / denom;
-            if (floatCheck) return total;
-            else return (int) total;
-        } else if (numerator instanceof Float) {
-            total = numerator.floatValue() / denom;
-            return total;
-        } else return null;
+        return null;
     }
 
     public static void main(String[] args) {
@@ -217,7 +230,8 @@ public class Evaluator {
 //        System.out.println(evaluator.evalS("2.34")); // 2.34
 //        System.out.println(evaluator.evalS("2/34")); // 2/34
 //        System.out.println(evaluator.evalS("(+ 1 2/3)"));
-        System.out.println(evaluator.evalS("(- 2 2 1)"));
+//        System.out.println(evaluator.evalS("(* 2 2.5 3/2)"));
+        System.out.println(evaluator.evalS("(/ 2 3/2)"));
 //        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
 //        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
 //        System.out.println(evaluator.evalS("(* 2 3)")); // 6

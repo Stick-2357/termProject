@@ -102,7 +102,6 @@ public class Rational extends Number implements Comparable<Rational> {
         return new Rational(c.num * d.num, c.den * d.den);
     }
 
-
     // return a + b, staving off overflow
     public Rational plus(Rational b) {
         Rational a = this;
@@ -122,6 +121,8 @@ public class Rational extends Number implements Comparable<Rational> {
         s.num *= f;
         return s;
     }
+
+    public Rational reciprocal() { return new Rational(den, num);  }
 
     @Override
     public int intValue() {
