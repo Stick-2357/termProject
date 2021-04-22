@@ -66,6 +66,10 @@ public class Evaluator {
         if (f != null) {
             return f;
         }
+        Rational r = evalRational(token);
+        if (r != null) {
+            return r;
+        }
         return null;
     }
 
@@ -85,34 +89,89 @@ public class Evaluator {
         }
     }
 
+    Rational evalRational(String s) {
+        try {
+            return new Rational(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     // helper functions
     public Number sum(List<Number> list) {
         float sum = 0;
         boolean floatCheck = false;
-        for (Number i : list) {
-            if (i instanceof Integer)
-                sum += i.intValue();
-            else if (i instanceof Float) {
-                sum += i.floatValue();
-                floatCheck = true;
+        boolean rationalCheck = false;
+        Rational rationalSum = new Rational();
+        for (Number n : list) {
+            if (rationalCheck && !floatCheck) {
+                if (n instanceof Integer) {
+                    rationalSum = rationalSum.plus(new Rational(n.intValue(), 1));
+                } else if (n instanceof Float) {
+                    sum = rationalSum.floatValue();
+                    sum += n.floatValue();
+                    floatCheck = true;
+                } else if (n instanceof Rational) {
+                    rationalSum = rationalSum.plus((Rational) n);
+                }
+            } else {
+                if (n instanceof Integer)
+                    sum += n.intValue();
+                else if (n instanceof Float) {
+                    sum += n.floatValue();
+                    floatCheck = true;
+                } else if (n instanceof Rational) {
+                    if (floatCheck) {
+                        sum += n.floatValue();
+                    } else {
+                        rationalSum = new Rational(sum);
+                        rationalSum = rationalSum.plus((Rational) n);
+                        rationalCheck = true;
+                    }
+                }
             }
+
         }
         if (floatCheck) return sum;
+        else if (rationalCheck) return rationalSum;
         else return (int) sum;
     }
 
     public Number mult(List<Number> list) {
         float total = 1;
+        Rational rationalTotal = new Rational(1, 1);
         boolean floatCheck = false;
+        boolean rationalCheck = false;
         for (Number i : list) {
-            if (i instanceof Integer)
-                total *= i.intValue();
-            else if (i instanceof Float) {
-                total *= i.floatValue();
-                floatCheck = true;
+            if (rationalCheck && !floatCheck) {
+                if (i instanceof Integer) {
+                    rationalTotal.times(new Rational(i.intValue(), 1));
+                } else if (i instanceof Float) {
+                    total = rationalTotal.floatValue();
+                    total *= i.floatValue();
+                    floatCheck = true;
+                } else if (i instanceof Rational) {
+                    rationalTotal.times((Rational) i);
+                }
+            } else {
+                if (i instanceof Integer)
+                    total *= i.intValue();
+                else if (i instanceof Float) {
+                    total *= i.floatValue();
+                    floatCheck = true;
+                } else if (i instanceof Rational) {
+                    if (floatCheck) {
+                        total *= i.floatValue();
+                    } else {
+                        rationalTotal = new Rational((int) total, 1);
+                        rationalTotal.times((Rational) i);
+                        rationalCheck = true;
+                    }
+                }
             }
         }
         if (floatCheck) return total;
+        else if (rationalCheck) return rationalTotal;
         else return (int) total;
     }
 
@@ -143,10 +202,14 @@ public class Evaluator {
         Evaluator evaluator = new Evaluator();
 
 //        System.out.println(evaluator.evalS("234")); // 234
-        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
-        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
-        System.out.println(evaluator.evalS("(* 2 3)")); // 6
-        System.out.println(evaluator.evalS("(* 2.5 3)")); // 7.5
+//        System.out.println(evaluator.evalS("2.34")); // 2.34
+//        System.out.println(evaluator.evalS("2/34")); // 2/34
+//        System.out.println(evaluator.evalS("(+ 1 2/3)"));
+        System.out.println(evaluator.evalS("(* 2 2.5 3/2)"));
+//        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
+//        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
+//        System.out.println(evaluator.evalS("(* 2 3)")); // 6
+//        System.out.println(evaluator.evalS("(* 2.5 3)")); // 7.5
 //        System.out.println(evaluator.evalS("(+ 20)")); // 20
 //        System.out.println(evaluator.evalS("(+ 1 234)")); // 235
 //        System.out.println(evaluator.evalS("(+ 2 10 200)")); // 212
