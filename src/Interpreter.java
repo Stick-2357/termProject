@@ -48,7 +48,7 @@ public class Interpreter extends Evaluator {
             System.out.println(evalVar(tokens, start, end));
             return true;
         }
-        Number r = evalExpr(tokens, 0, tokens.size() - 1);
+        Number r = evalExpr(tokens, start, tokens.size() - 1);
         if (r == null) return false;
         System.out.println(r);
         return true;

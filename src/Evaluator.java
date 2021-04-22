@@ -19,20 +19,14 @@ public class Evaluator {
         if (tokens.get(start).equals("(") && tokens.get(end).equals(")")) {
             String operator = tokens.get(start + 1);
             List<Number> operands = getOperands(tokens, start + 2, end - 1);
-            switch (operator) {
-                case "+":
-                    return sum(operands);
-                case "*":
-                    return mult(operands);
-                case "/":
-                    return div(operands);
-                case "-":
-                    return sub(operands);
-                case "expt":
-                    return expt(operands);
-                default:
-                    return null;
-            }
+            return switch (operator) {
+                case "+" -> sum(operands);
+                case "*" -> mult(operands);
+                case "/" -> div(operands);
+                case "-" -> sub(operands);
+                case "expt" -> expt(operands); // exponential
+                default -> null;
+            };
         } else if (start == end) {
             return evalId(tokens.get(start));
         }
