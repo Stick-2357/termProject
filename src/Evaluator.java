@@ -124,7 +124,7 @@ public class Evaluator {
                     if (floatCheck) {
                         sum += n.floatValue();
                     } else {
-                        rationalSum = new Rational(sum);
+                        rationalSum = new Rational((int) sum, 1);
                         rationalSum = rationalSum.plus((Rational) n);
                         rationalCheck = true;
                     }
@@ -142,29 +142,29 @@ public class Evaluator {
         Rational rationalTotal = new Rational(1, 1);
         boolean floatCheck = false;
         boolean rationalCheck = false;
-        for (Number i : list) {
+        for (Number n : list) {
             if (rationalCheck && !floatCheck) {
-                if (i instanceof Integer) {
-                    rationalTotal.times(new Rational(i.intValue(), 1));
-                } else if (i instanceof Float) {
+                if (n instanceof Integer) {
+                    rationalTotal.times(new Rational(n.intValue(), 1));
+                } else if (n instanceof Float) {
                     total = rationalTotal.floatValue();
-                    total *= i.floatValue();
+                    total *= n.floatValue();
                     floatCheck = true;
-                } else if (i instanceof Rational) {
-                    rationalTotal.times((Rational) i);
+                } else if (n instanceof Rational) {
+                    rationalTotal.times((Rational) n);
                 }
             } else {
-                if (i instanceof Integer)
-                    total *= i.intValue();
-                else if (i instanceof Float) {
-                    total *= i.floatValue();
+                if (n instanceof Integer)
+                    total *= n.intValue();
+                else if (n instanceof Float) {
+                    total *= n.floatValue();
                     floatCheck = true;
-                } else if (i instanceof Rational) {
+                } else if (n instanceof Rational) {
                     if (floatCheck) {
-                        total *= i.floatValue();
+                        total *= n.floatValue();
                     } else {
                         rationalTotal = new Rational((int) total, 1);
-                        rationalTotal.times((Rational) i);
+                        rationalTotal.times((Rational) n);
                         rationalCheck = true;
                     }
                 }
@@ -176,26 +176,34 @@ public class Evaluator {
     }
 
     public Number div(List<Number> list) {
-        float denom = 1;
+        Number denom = 1;
         float total;
         Number numerator = list.get(0);
         boolean floatCheck = false;
-        for (int i = 1; i <= list.size() - 1; i++) {
-            if (list.get(i) instanceof Integer)
-                denom *= list.get(i).intValue();
-            else if (list.get(i) instanceof Float) {
-                denom *= list.get(i).floatValue();
-                floatCheck = true;
-            }
-        }
+        boolean rationalCheck = false;
+
+        List<Number> denominators = list.subList(1, list.size() - 1);
+        denom = mult(denominators);
+
         if (numerator instanceof Integer) {
-            total = numerator.intValue() / denom;
-            if (floatCheck) return total;
-            else return (int) total;
+            if (denom instanceof Integer) {
+                return numerator.intValue() / denom.intValue();
+            } else if (denom instanceof Float) {
+                return numerator.intValue() / denom.floatValue();
+            } else if (denom instanceof Rational) {
+                Rational rat = (Rational) denom;
+                if (rat.intValue() == rat.floatValue()) {
+                    return new Rational((int) numerator, denom.intValue());
+                }
+            }
+
         } else if (numerator instanceof Float) {
             total = numerator.floatValue() / denom;
             return total;
-        } else return null;
+        } else if (numerator instanceof Rational) {
+
+        }
+        else return null;
     }
 
     public static void main(String[] args) {
