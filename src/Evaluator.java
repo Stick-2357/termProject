@@ -145,13 +145,13 @@ public class Evaluator {
         for (Number n : list) {
             if (rationalCheck && !floatCheck) {
                 if (n instanceof Integer) {
-                    rationalTotal.times(new Rational(n.intValue(), 1));
+                    rationalTotal = rationalTotal.times(new Rational(n.intValue(), 1));
                 } else if (n instanceof Float) {
                     total = rationalTotal.floatValue();
                     total *= n.floatValue();
                     floatCheck = true;
                 } else if (n instanceof Rational) {
-                    rationalTotal.times((Rational) n);
+                    rationalTotal = rationalTotal.times((Rational) n);
                 }
             } else {
                 if (n instanceof Integer)
@@ -164,7 +164,7 @@ public class Evaluator {
                         total *= n.floatValue();
                     } else {
                         rationalTotal = new Rational((int) total, 1);
-                        rationalTotal.times((Rational) n);
+                        rationalTotal = rationalTotal.times((Rational) n);
                         rationalCheck = true;
                     }
                 }
@@ -176,14 +176,10 @@ public class Evaluator {
     }
 
     public Number div(List<Number> list) {
-        Number denom = 1;
-        float total;
         Number numerator = list.get(0);
-        boolean floatCheck = false;
-        boolean rationalCheck = false;
 
-        List<Number> denominators = list.subList(1, list.size() - 1);
-        denom = mult(denominators);
+        List<Number> denominators = list.subList(1, list.size());
+        Number denom = mult(denominators);
 
         if (numerator instanceof Integer) {
             if (denom instanceof Integer) {
@@ -191,19 +187,28 @@ public class Evaluator {
             } else if (denom instanceof Float) {
                 return numerator.intValue() / denom.floatValue();
             } else if (denom instanceof Rational) {
-                Rational rat = (Rational) denom;
-                if (rat.intValue() == rat.floatValue()) {
-                    return new Rational((int) numerator, denom.intValue());
-                }
+                Rational numRational = new Rational((int) numerator, 1);
+                Rational reciprocal = ((Rational) denom).reciprocal();
+                return numRational.times(reciprocal);
             }
-
         } else if (numerator instanceof Float) {
-            total = numerator.floatValue() / denom;
-            return total;
+            if (denom instanceof Integer) {
+                return numerator.floatValue() / denom.intValue();
+            } else if (denom instanceof Float) {
+                return numerator.floatValue() / denom.floatValue();
+            } else if (denom instanceof Rational) {
+                return numerator.floatValue() / denom.floatValue();
+            }
         } else if (numerator instanceof Rational) {
-
+            if (denom instanceof Integer) {
+                return ((Rational) numerator).times(new Rational(1, (int) denom)); // numerator * reciprocal of denominator
+            } else if (denom instanceof Float) {
+                return numerator.floatValue() / denom.floatValue(); // return as float
+            } else if (denom instanceof Rational) {
+                return ((Rational) numerator).times(((Rational) denom).reciprocal());
+            }
         }
-        else return null;
+        return null;
     }
 
     public static void main(String[] args) {
@@ -213,7 +218,8 @@ public class Evaluator {
 //        System.out.println(evaluator.evalS("2.34")); // 2.34
 //        System.out.println(evaluator.evalS("2/34")); // 2/34
 //        System.out.println(evaluator.evalS("(+ 1 2/3)"));
-        System.out.println(evaluator.evalS("(* 2 2.5 3/2)"));
+//        System.out.println(evaluator.evalS("(* 2 2.5 3/2)"));
+        System.out.println(evaluator.evalS("(/ 2 3/2)"));
 //        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
 //        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
 //        System.out.println(evaluator.evalS("(* 2 3)")); // 6

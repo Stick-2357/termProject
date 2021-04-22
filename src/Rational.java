@@ -122,6 +122,8 @@ public class Rational extends Number implements Comparable<Rational> {
         return s;
     }
 
+    public Rational reciprocal() { return new Rational(den, num);  }
+
     @Override
     public int intValue() {
         return num / den;
