@@ -26,6 +26,8 @@ public class Evaluator {
                     return mult(operands);
                 case "/":
                     return div(operands);
+                case "-":
+                    return sub(operands);
                 default:
                     return null;
             }
@@ -135,6 +137,16 @@ public class Evaluator {
         if (floatCheck) return sum;
         else if (rationalCheck) return rationalSum;
         else return (int) sum;
+    }
+
+    public Number sub(List<Number> list) {
+        for(int i = 1; i < list.size(); i++) {
+            List<Number> new_list = new ArrayList<>();
+            new_list.add(list.get(i));
+            new_list.add(-1);
+            list.set(i, mult(new_list));
+        }
+        return sum(list);
     }
 
     public Number mult(List<Number> list) {
