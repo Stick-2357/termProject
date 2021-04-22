@@ -160,9 +160,13 @@ public class Evaluator {
                     total *= i.floatValue();
                     floatCheck = true;
                 } else if (i instanceof Rational) {
-                    rationalTotal = new Rational(total);
-                    rationalTotal.times((Rational) i);
-                    rationalCheck = true;
+                    if (floatCheck) {
+                        total *= i.floatValue();
+                    } else {
+                        rationalTotal = new Rational((int) total, 1);
+                        rationalTotal.times((Rational) i);
+                        rationalCheck = true;
+                    }
                 }
             }
         }
