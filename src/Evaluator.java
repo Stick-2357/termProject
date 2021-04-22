@@ -27,7 +27,7 @@ public class Evaluator {
                 case "/":
                     return div(operands);
                 case "-":
-                    return sub(operands)
+                    return sub(operands);
                 default:
                     return null;
             }
@@ -99,16 +99,6 @@ public class Evaluator {
         }
     }
 
-    public Number sub(List<Number> list) {
-        for(int i = 1; i<list.size()-1; i++) {
-            List<Number> new_list = ArrayList<Number>();
-            new_list.add(list.get(i));
-            new_list.add(-1);
-            list.get(i) = mult(new_list);
-        }
-        return sum(list);
-    }
-
     // helper functions
     public Number sum(List<Number> list) {
         float sum = 0;
@@ -136,7 +126,7 @@ public class Evaluator {
                     if (floatCheck) {
                         sum += n.floatValue();
                     } else {
-                        rationalSum = new Rational(sum);
+                        rationalSum = new Rational((int) sum, 1);
                         rationalSum = rationalSum.plus((Rational) n);
                         rationalCheck = true;
                     }
@@ -147,6 +137,16 @@ public class Evaluator {
         if (floatCheck) return sum;
         else if (rationalCheck) return rationalSum;
         else return (int) sum;
+    }
+
+    public Number sub(List<Number> list) {
+        for(int i = 1; i < list.size(); i++) {
+            List<Number> new_list = new ArrayList<>();
+            new_list.add(list.get(i));
+            new_list.add(-1);
+            list.set(i, mult(new_list));
+        }
+        return sum(list);
     }
 
     public Number mult(List<Number> list) {
@@ -217,7 +217,7 @@ public class Evaluator {
 //        System.out.println(evaluator.evalS("2.34")); // 2.34
 //        System.out.println(evaluator.evalS("2/34")); // 2/34
 //        System.out.println(evaluator.evalS("(+ 1 2/3)"));
-        System.out.println(evaluator.evalS("(- 3 2)"));
+        System.out.println(evaluator.evalS("(- 2 2 1)"));
 //        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
 //        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
 //        System.out.println(evaluator.evalS("(* 2 3)")); // 6
