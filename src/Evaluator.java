@@ -28,6 +28,8 @@ public class Evaluator {
                     return div(operands);
                 case "-":
                     return sub(operands);
+                case "expt":
+                    return expt(operands);
                 default:
                     return null;
             }
@@ -140,7 +142,7 @@ public class Evaluator {
     }
 
     public Number sub(List<Number> list) {
-        for(int i = 1; i < list.size(); i++) {
+        for (int i = 1; i < list.size(); i++) {
             List<Number> new_list = new ArrayList<>();
             new_list.add(list.get(i));
             new_list.add(-1);
@@ -223,6 +225,35 @@ public class Evaluator {
         return null;
     }
 
+    public Number expt(List<Number> list) {
+        if (list.size() > 2) { // cannot have more than two operands
+            return null;
+        }
+        Number base = list.get(0);
+        Number power = list.get(1);
+        if (base instanceof Integer) {
+            if (power instanceof Integer) {
+                return (int) Math.pow(base.intValue(), power.intValue());
+            } else if (power instanceof Float) {
+                return Math.pow(base.intValue(), power.floatValue());
+            } else if (power instanceof Rational) {
+                if (power.intValue() == power.floatValue()) { // if could be an integer
+                    return (int) Math.pow(base.intValue(), power.intValue());
+                }
+                return Math.pow(base.intValue(), power.floatValue());
+            }
+        } else if (base instanceof Float || base instanceof Rational) {
+            if (power instanceof Integer) {
+                return Math.pow(base.floatValue(), power.intValue());
+            } else if (power instanceof Float) {
+                return Math.pow(base.floatValue(), power.floatValue());
+            } else if (power instanceof Rational) {
+                return Math.pow(base.floatValue(), power.floatValue());
+            }
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         Evaluator evaluator = new Evaluator();
 
@@ -230,8 +261,7 @@ public class Evaluator {
 //        System.out.println(evaluator.evalS("2.34")); // 2.34
 //        System.out.println(evaluator.evalS("2/34")); // 2/34
 //        System.out.println(evaluator.evalS("(+ 1 2/3)"));
-//        System.out.println(evaluator.evalS("(* 2 2.5 3/2)"));
-        System.out.println(evaluator.evalS("(/ 2 3/2)"));
+        System.out.println(evaluator.evalS("(expt 2 2/4)"));
 //        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
 //        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
 //        System.out.println(evaluator.evalS("(* 2 3)")); // 6
