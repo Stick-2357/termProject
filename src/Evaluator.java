@@ -26,6 +26,8 @@ public class Evaluator {
                     return mult(operands);
                 case "/":
                     return div(operands);
+                case "-":
+                    return sub(operands)
                 default:
                     return null;
             }
@@ -95,6 +97,16 @@ public class Evaluator {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    public Number sub(List<Number> list) {
+        for(int i = 1; i<list.size()-1; i++) {
+            List<Number> new_list = ArrayList<Number>();
+            new_list.add(list.get(i));
+            new_list.add(-1);
+            list.get(i) = mult(new_list);
+        }
+        return sum(list);
     }
 
     // helper functions
@@ -205,7 +217,7 @@ public class Evaluator {
 //        System.out.println(evaluator.evalS("2.34")); // 2.34
 //        System.out.println(evaluator.evalS("2/34")); // 2/34
 //        System.out.println(evaluator.evalS("(+ 1 2/3)"));
-        System.out.println(evaluator.evalS("(* 2 2.5 3/2)"));
+        System.out.println(evaluator.evalS("(- 3 2)"));
 //        System.out.println(evaluator.evalS("(+ 2 3)")); // 5
 //        System.out.println(evaluator.evalS("(+ 2.5 3)")); // 5.5
 //        System.out.println(evaluator.evalS("(* 2 3)")); // 6
